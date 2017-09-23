@@ -57,17 +57,17 @@ public class PlayerAI {
 
     			if (path_one > path_two) {
     				for (int i=1; i<6; i++) {
-    					avoidPoint.add(new Point(2*i, i));
-    					avoidPoint.add(new Point(-i, 2*i));
-    					avoidPoint.add(new Point(i, -2*i));
-    					avoidPoint.add(new Point(-2*i, -i));
+    					avoidPoint.add(mainNest.add(new Point(2*i, i)));
+    					avoidPoint.add(mainNest.add(new Point(-i, 2*i)));
+    					avoidPoint.add(mainNest.add(new Point(i, -2*i)));
+    					avoidPoint.add(mainNest.add(new Point(-2*i, -i)));
     				}
     			} else {
     				for (int i=1; i<6; i++) {
-    					avoidPoint.add(new Point(2*i, -i));
-    					avoidPoint.add(new Point(i, 2*i));
-    					avoidPoint.add(new Point(-i, -2*i));
-    					avoidPoint.add(new Point(-2*i, i));
+    					avoidPoint.add(mainNest.add(new Point(2*i, -i)));
+    					avoidPoint.add(mainNest.add(new Point(i, 2*i)));
+    					avoidPoint.add(mainNest.add(new Point(-2*i, i)));
+    					avoidPoint.add(mainNest.add(new Point(-i, -2*i)));
     				}
     			}
     		} else if (turn == 20) {
