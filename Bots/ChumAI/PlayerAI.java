@@ -17,8 +17,8 @@ public class PlayerAI {
 	EnemyUnit enemy;
 	int distance;
 //	ArrayList<EnemyUnit> empty = new ArrayList<EnemyUnit>();
-	Map<String, ArrayList<Point>> unitIDs;
-	ArrayList<Point> enemyNest = null;
+//	Map<String, ArrayList<Point>> unitIDs = new HashMap<string, ArrayList<Point>>();
+	ArrayList<Point> avoidPoint = null;
 	
     public PlayerAI() {
         // Any instantiation code goes here
@@ -38,31 +38,69 @@ public class PlayerAI {
         Build thou nests
         Grow, become stronger
         Take over the world */
-    	
-    		// for debug purposes TODO: REMOVE ONCE IMPLEMENTED
-    		turn = 20;
-    		
+    		// Tries to create a map of unclustered nests
+    		if (turn == 0) {
+    			Point mainNest = world.getFriendlyNestPositions()[0];
+    			int path_one, path_two;
+    			path_one = path_two = 0;
+    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, 1)));
+    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 2)));
+    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -2)));
+    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, -1)));
+    			
+    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, -1)));
+    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 2)));
+    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, 1)));
+    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -2)));
+    			
+    			avoidPoint = new ArrayList<Point>();
+
+    			if (path_one > path_two) {
+    				for (int i=1; i<6; i++) {
+    					avoidPoint.add(new Point(2*i, i));
+    					avoidPoint.add(new Point(-i, 2*i));
+    					avoidPoint.add(new Point(i, -2*i));
+    					avoidPoint.add(new Point(-2*i, -i));
+    				}
+    			} else {
+    				for (int i=1; i<6; i++) {
+    					avoidPoint.add(new Point(2*i, -i));
+    					avoidPoint.add(new Point(i, 2*i));
+    					avoidPoint.add(new Point(-i, -2*i));
+    					avoidPoint.add(new Point(-2*i, i));
+    				}
+    			}
+    		} elif (turn == 20) {
+    			avoidPoint = null;
+    		}
+    		//incrementing turns
+    		turn++;
     		// Already in a winning position. Ensuring we have enough score before taking over
     		// the last nest
-    		if (world.getEnemyNestPositions().length == 1) {
-    			if (world.getFriendlyTiles().length <= world.getEnemyTiles().length) {
-    				enemyNest = new ArrayList<Point>();
-    				Point theNest = world.getEnemyNestPositions()[0];
-    				enemyNest.add(theNest + Point(1,0));
-    				enemyNest.add(theNest + Point(-1,0));
-    				enemyNest.add((theNest + Point(0,1));
-    				enemyNest.add((theNest + Point(0,-1));
+    		if (world.getavoidPointPositions().length == 1) {
+    			if (turn < 90 && world.getFriendlyTiles().length <= world.getEnemyTiles().length) {
+    				avoidPoint = new ArrayList<Point>();
+    				Point theNest = world.getavoidPointPositions()[0];
+    				avoidPoint.add(theNest.add(new Point(1,0)));
+    				avoidPoint.add(theNest.add(new Point(-1,0)));
+    				avoidPoint.add(theNest.add(new Point(0,1)));
+    				avoidPoint.add(theNest.add(new Point(0,-1)));
     			} else {
-    				enemyNest = null;
+    				avoidPoint = null;
     			}
     		};
     		
         for (FriendlyUnit unit: friendlyUnits) {
 //        		if (turn < 20) { // CONQUER!
-//        			
-//        			
+//        			//add if does not contain
+//        			String uid = unit.getUuid();
+//        			if (!unitIDs.containsKey(uid)) {
+//        				unitIDs[uid] = 
+//        			}
+//        				
 //        		} else { // DESTROY!!
             		position = unit.getPosition();
+            		// Can optimize by choosing the "biggest enemy" or "killable" enemy later on
             		enemy = world.getClosestEnemyFrom(position, null);
             		distance = world.getShortestPathDistance(position, enemy.getPosition());
             		if (distance == 1) {
@@ -91,8 +129,15 @@ public class PlayerAI {
     public void conquer (World world, FriendlyUnit unit) {
         List<Point> path = world.getShortestPath(unit.getPosition(),
                 world.getClosestCapturableTileFrom(unit.getPosition(), null).getPosition(),
-                enemyNest);
-        	if (path != null) world.move(unit, path.get(0));
+                avoidPoint);
+        	if (path == null) {
+        		path = world.getShortestPath(unit.getPosition(),
+        				world.getClosestCapturableTileFrom(unit.getPosition(), null).getPosition(), 
+        				null);
+        	}
+        	if (path != null) world.move(unit, path[0])
+
+        	
     }
     
 
