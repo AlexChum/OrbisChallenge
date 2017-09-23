@@ -38,15 +38,25 @@ public class PlayerAI {
         Build thou nests
         Grow, become stronger
         Take over the world */
+    	
+    		// for debug purposes TODO: REMOVE ONCE IMPLEMENTED
     		turn = 20;
+    		
+    		// Already in a winning position. Ensuring we have enough score before taking over
+    		// the last nest
     		if (world.getEnemyNestPositions().length == 1) {
     			if (world.getFriendlyTiles().length <= world.getEnemyTiles().length) {
     				enemyNest = new ArrayList<Point>();
-    				enemyNest.add(world.getEnemyNestPositions()[0]);
+    				Point theNest = world.getEnemyNestPositions()[0];
+    				enemyNest.add(theNest + Point(1,0));
+    				enemyNest.add(theNest + Point(-1,0));
+    				enemyNest.add((theNest + Point(0,1));
+    				enemyNest.add((theNest + Point(0,-1));
     			} else {
     				enemyNest = null;
     			}
     		};
+    		
         for (FriendlyUnit unit: friendlyUnits) {
 //        		if (turn < 20) { // CONQUER!
 //        			
