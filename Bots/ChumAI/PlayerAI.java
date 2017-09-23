@@ -70,17 +70,17 @@ public class PlayerAI {
     					avoidPoint.add(new Point(-2*i, i));
     				}
     			}
-    		} elif (turn == 20) {
+    		} else if (turn == 20) {
     			avoidPoint = null;
     		}
     		//incrementing turns
     		turn++;
     		// Already in a winning position. Ensuring we have enough score before taking over
     		// the last nest
-    		if (world.getavoidPointPositions().length == 1) {
+    		if (world.getEnemyNestPositions().length == 1) {
     			if (turn < 90 && world.getFriendlyTiles().length <= world.getEnemyTiles().length) {
     				avoidPoint = new ArrayList<Point>();
-    				Point theNest = world.getavoidPointPositions()[0];
+    				Point theNest = world.getFriendlyNestPositions()[0];
     				avoidPoint.add(theNest.add(new Point(1,0)));
     				avoidPoint.add(theNest.add(new Point(-1,0)));
     				avoidPoint.add(theNest.add(new Point(0,1)));
@@ -135,7 +135,7 @@ public class PlayerAI {
         				world.getClosestCapturableTileFrom(unit.getPosition(), null).getPosition(), 
         				null);
         	}
-        	if (path != null) world.move(unit, path[0])
+        	if (path != null) world.move(unit, path.get(0));
 
         	
     }
