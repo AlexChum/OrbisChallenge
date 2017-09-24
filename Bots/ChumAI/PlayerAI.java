@@ -120,7 +120,6 @@ public class PlayerAI {
 	    				conquer (world, unit);
 	    			}
 //        		}
-
         }
     }
     
@@ -130,7 +129,7 @@ public class PlayerAI {
                 avoidPoint);
         	if (path == null) {
         		path = world.getShortestPath(unit.getPosition(),
-        				world.getClosestCapturableTileFrom(unit.getPosition(), null).getPosition(), 
+        				world.getClosestCapturableTileFrom(unit.getPosition(), avoidPoint).getPosition(), 
         				null);
         	}
         	
