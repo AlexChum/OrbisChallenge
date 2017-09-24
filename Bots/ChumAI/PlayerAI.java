@@ -47,7 +47,11 @@ public class PlayerAI {
     			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 2)));
     			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -2)));
     			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, -1)));
-    			
+    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, -1)));
+    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, 1)));
+    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 3)));
+    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -3)));
+    			    			
     			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, -1)));
     			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 2)));
     			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, 1)));
@@ -55,28 +59,31 @@ public class PlayerAI {
     			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, 1)));
     			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, -1)));
     			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -3)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -3)));
+    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 3)));
     			
     			avoidPoint = new ArrayList<Point>();
     			if (path_one >= path_two) {
-    				for (int i=1; i<4; i++) {
+    				for (int i=1; i<6; i++) {
     					avoidPoint.add(mainNest.add(new Point(2*i, i)));
     					avoidPoint.add(mainNest.add(new Point(-i, 2*i)));
     					avoidPoint.add(mainNest.add(new Point(i, -2*i)));
     					avoidPoint.add(mainNest.add(new Point(-2*i, -i)));
-    					
+    					avoidPoint.add(mainNest.add(new Point(-3*i, i)));
+    					avoidPoint.add(mainNest.add(new Point(3*i, -i)));
+    					avoidPoint.add(mainNest.add(new Point(i, 3*i)));
+    					avoidPoint.add(mainNest.add(new Point(-i, -3*i)));
     				
     				} 
     			} else {
-	    				for (int i=1; i<4; i++) {
+	    				for (int i=1; i<6; i++) {
 	    					avoidPoint.add(mainNest.add(new Point(2*i, -i)));
 	    					avoidPoint.add(mainNest.add(new Point(i, 2*i)));
 	    					avoidPoint.add(mainNest.add(new Point(-2*i, i)));
 	    					avoidPoint.add(mainNest.add(new Point(-i, -2*i)));
 	    					avoidPoint.add(mainNest.add(new Point(3*i, i)));
-	    					avoidPoint.add(mainNest.add(new Point(-3, -i)));
+	    					avoidPoint.add(mainNest.add(new Point(-3*i, -i)));
 	    					avoidPoint.add(mainNest.add(new Point(i, -3*i)));
-	    					avoidPoint.add(mainNest.add(new Point(-i, -3*i)));
+	    					avoidPoint.add(mainNest.add(new Point(-i, 3*i)));
 
 	    				}
 	    		}
