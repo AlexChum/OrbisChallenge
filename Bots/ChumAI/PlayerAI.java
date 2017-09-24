@@ -65,24 +65,24 @@ public class PlayerAI {
     		
     		// Already in a winning position (Opponent only has 1 nest after 13 turns). 
     		// Ensuring we have enough every score available before taking over the last nest
-    		if (turn > 13 && world.getEnemyNestPositions().length == 1) {
+    		if (turn > 13 && world.getEnemyNestPositions().length <= 3) {
 	    		lastNest (world);
     		} else {
     			winningTiles.clear();
     		}
     		
-    		// Looping through "directed" fireflies
-    		for (Map.Entry<String, Point> entry: ConquerMap.entrySet()) {
-    			dead = true;
-    			for (FriendlyUnit unit: friendlyUnits) {
-    				if (entry.getKey().equals(unit.getUuid())) {
-    					dead = false;
-    				}
-    			}
-    			if (dead) {
-    				toConquer.add(ConquerMap.remove(entry.getKey()));
-    			}
-    		}
+    		// // Looping through "directed" fireflies
+    		// for (Map.Entry<String, Point> entry: ConquerMap.entrySet()) {
+    		// 	dead = true;
+    		// 	for (FriendlyUnit unit: friendlyUnits) {
+    		// 		if (entry.getKey().equals(unit.getUuid())) {
+    		// 			dead = false;
+    		// 		}
+    		// 	}
+    		// 	if (dead) {
+    		// 		toConquer.add(ConquerMap.remove(entry.getKey()));
+    		// 	}
+    		// }
     		
     		//Looping through every unit
         for (FriendlyUnit unit: friendlyUnits) {
@@ -101,17 +101,17 @@ public class PlayerAI {
     					conquer (world, unit);
     				}
     				// Implementation not working
-    			} else if (ConquerMap.containsKey(uid)) {
-    				conquer (world, unit, ConquerMap.get(uid));
-    			} else if (!toConquer.isEmpty()) {
-    				int shortestIndex = 1000;
-    				for (Point p: toConquer) {
-    					if (world.getShortestPathDistance(position, p)< shortestIndex) {
-    						shortestIndex = toConquer.indexOf(p);
-    					}
-    				}
-    				ConquerMap.put(uid, toConquer.remove(0));
-    				conquer (world, unit, ConquerMap.get(uid));
+    			// } else if (ConquerMap.containsKey(uid)) {
+    			// 	conquer (world, unit, ConquerMap.get(uid));
+    			// } else if (!toConquer.isEmpty()) {
+    			// 	int shortestIndex = 1000;
+    			// 	for (Point p: toConquer) {
+    			// 		if (world.getShortestPathDistance(position, p)< shortestIndex) {
+    			// 			shortestIndex = toConquer.indexOf(p);
+    			// 		}
+    			// 	}
+    			// 	ConquerMap.put(uid, toConquer.remove(0));
+    			// 	conquer (world, unit, ConquerMap.get(uid));
     			} else {
     				conquer (world, unit);
     			}
@@ -131,17 +131,9 @@ public class PlayerAI {
      * @param unit The unit currently undergoing <doMove>
      */
     public void conquer (World world, FriendlyUnit unit) {
-    		List<Point> path = null;
-    		if (turn > 15 && winningTiles.isEmpty()) {
-	        path = world.getShortestPath(unit.getPosition(),
-	                world.getClosestEnemyNestFrom(unit.getPosition(), avoidPoint),
-	                avoidPoint);
-    		}
-        	if (path == null) {
-        		path = world.getShortestPath(unit.getPosition(),
+    		List<Point> path = world.getShortestPath(unit.getPosition(),
         				world.getClosestCapturableTileFrom(unit.getPosition(), avoidPoint).getPosition(), 
         				avoidPoint);
-        	}
         	if (path == null) {
         		path = world.getShortestPath(unit.getPosition(),
         				world.getClosestCapturableTileFrom(unit.getPosition(), avoidPoint).getPosition(), 
@@ -247,23 +239,23 @@ public class PlayerAI {
 		// Brute force computation
 //		// Looped Computation does not seem to work because of world.getShortestPathDistance
 //		// It does not like references as arguments
-		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, 1)));
-		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 2)));
-		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -2)));
-		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, -1)));
-		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, -1)));
-		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, 1)));
-		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 3)));
-		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -3)));
+		// path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, 1)));
+		// path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 2)));
+		// path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -2)));
+		// path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, -1)));
+		// path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, -1)));
+		// path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, 1)));
+		// path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 3)));
+		// path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -3)));
 		    			
-		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, -1)));
-		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 2)));
-		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, 1)));
-		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -2)));
-		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, 1)));
-		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, -1)));
-		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -3)));
-		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 3)));
+		// path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, -1)));
+		// path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 2)));
+		// path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, 1)));
+		// path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -2)));
+		// path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, 1)));
+		// path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, -1)));
+		// path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -3)));
+		// path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 3)));
 		
 //		// Looped Computation
 //		mainNest = mainNest.add(new Point(1, -3));
