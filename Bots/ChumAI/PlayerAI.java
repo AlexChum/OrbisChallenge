@@ -16,8 +16,9 @@ public class PlayerAI {
 	Point position;
 	EnemyUnit enemy;
 	int distance;
-//	ArrayList<EnemyUnit> empty = new ArrayList<EnemyUnit>();
-//	Map<String, ArrayList<Point>> unitIDs = new HashMap<string, ArrayList<Point>>();
+	int tiles;
+
+	ArrayList<Point> winningTiles = new ArrayList<Point>();
 	ArrayList<Point> avoidPoint = new ArrayList<Point>();
 	
     public PlayerAI() {
@@ -38,105 +39,52 @@ public class PlayerAI {
         Build thou nests
         Grow, become stronger
         Take over the world */
+    	
     		// Tries to create a map of unclustered nests
     		if (turn == 0) {
-    			Point mainNest = world.getFriendlyNestPositions()[0];
-    			int path_one, path_two;
-    			path_one = path_two = 0;
-    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, 1)));
-    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 2)));
-    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -2)));
-    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, -1)));
-    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, -1)));
-    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, 1)));
-    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 3)));
-    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -3)));
-    			    			
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, -1)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 2)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, 1)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -2)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, 1)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, -1)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -3)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 3)));
-    			
-    			avoidPoint = new ArrayList<Point>();
-    			if (path_one >= path_two) {
-    				for (int i=1; i<6; i++) {
-    					avoidPoint.add(mainNest.add(new Point(2*i, i)));
-    					avoidPoint.add(mainNest.add(new Point(-i, 2*i)));
-    					avoidPoint.add(mainNest.add(new Point(i, -2*i)));
-    					avoidPoint.add(mainNest.add(new Point(-2*i, -i)));
-    					avoidPoint.add(mainNest.add(new Point(-3*i, i)));
-    					avoidPoint.add(mainNest.add(new Point(3*i, -i)));
-    					avoidPoint.add(mainNest.add(new Point(i, 3*i)));
-    					avoidPoint.add(mainNest.add(new Point(-i, -3*i)));
-    				
-    				} 
-    			} else {
-	    				for (int i=1; i<6; i++) {
-	    					avoidPoint.add(mainNest.add(new Point(2*i, -i)));
-	    					avoidPoint.add(mainNest.add(new Point(i, 2*i)));
-	    					avoidPoint.add(mainNest.add(new Point(-2*i, i)));
-	    					avoidPoint.add(mainNest.add(new Point(-i, -2*i)));
-	    					avoidPoint.add(mainNest.add(new Point(3*i, i)));
-	    					avoidPoint.add(mainNest.add(new Point(-3*i, -i)));
-	    					avoidPoint.add(mainNest.add(new Point(i, -3*i)));
-	    					avoidPoint.add(mainNest.add(new Point(-i, 3*i)));
-
-	    				}
-	    		}
+    			noClusters (world);
+    		} else if (turn == 20) { // Clears position of all nests
+    			avoidPoint.clear();
     		}
     		
     		//incrementing turns
     		turn++;
+    		
+    		//TODO: REMOVE BEFORE SUBMITTING
+    		System.out.println(turn);
+    		
     		// Already in a winning position. Ensuring we have enough score before taking over
     		// the last nest
-    		if (turn > 20 && world.getEnemyNestPositions().length == 1) {
-    			if (turn > 40 && world.getFriendlyTiles().length <= world.getEnemyTiles().length) {
-    				avoidPoint = new ArrayList<Point>();
-    				Point theNest = world.getEnemyNestPositions()[0];
-    				avoidPoint.add(theNest.add(new Point(1,0)));
-    				avoidPoint.add(theNest.add(new Point(-1,0)));
-    				avoidPoint.add(theNest.add(new Point(0,1)));
-    				avoidPoint.add(theNest.add(new Point(0,-1)));
-    			} else {
-    				avoidPoint = null;
-    			}
+    		if (turn > 13 && world.getEnemyNestPositions().length == 1) {
+	    		lastNest (world);
+    		} else {
+    			winningTiles.clear();
     		}
+    		
+    		//Looping through every unit
         for (FriendlyUnit unit: friendlyUnits) {
-//        		if (turn < 20) { // CONQUER!
-//        			//add if does not contain
-//        			String uid = unit.getUuid();
-//        			if (!unitIDs.containsKey(uid)) {
-//        				unitIDs[uid] = 
-//        			}
-//        				
-//        		} else { // DESTROY!!
-            		position = unit.getPosition();
-            		// Can optimize by choosing the "biggest enemy" or "killable" enemy later on
-            		enemy = world.getClosestEnemyFrom(position, null);
-            		distance = world.getShortestPathDistance(position, enemy.getPosition());
-            		if (distance == 1) {
-            			world.move(unit, enemy.getPosition());
-            		} else if (distance < 4) {
-            			// Tactic 1
-	    				if ((enemy.getHealth()+3) > unit.getHealth()) {
-	    					world.move(unit, position);
-	    				} else {
-	    					conquer (world, unit);
-	    				}
-            			// Tactic 2
+        		position = unit.getPosition();
+        		// Can optimize by choosing the "biggest enemy" or "killable" enemy later on
+        		enemy = world.getClosestEnemyFrom(position, null);
+        		distance = world.getShortestPathDistance(position, enemy.getPosition());
+        		if (distance == 1 && !winningTiles.contains(enemy.getPosition())) {
+        			world.move(unit, enemy.getPosition());
+        		} else if (distance < 4) {
+        			// Tactic 1
+    				if ((enemy.getHealth()+3) > unit.getHealth()) {
+    					world.move(unit, position);
+    				} else {
+    					conquer (world, unit);
+    				}
+    			} else {
+    				conquer (world, unit);
+    			}
+        			// Tactic 2
 //	    				if (!((enemy.getHealth()-4) > unit.getHealth() || (enemy.getHealth()+4) < unit.getHealth())) {
 //	    					world.move(unit, position);
 //	    				} else {
 //	    					conquer (world, unit);
 //	    				}
-	    			} else {
-	    				conquer (world, unit);
-	    			}
-//        		}
 
         }
     }
@@ -150,11 +98,121 @@ public class PlayerAI {
         				world.getClosestCapturableTileFrom(unit.getPosition(), avoidPoint).getPosition(), 
         				null);
         	}
-        	
         	if (path != null) world.move(unit, path.get(0));
-
-        	
     }
     
+    public void lastNest (World world) {
+		int permanentTiles = 1;
+		for (Tile tile: world.getEnemyTiles()) {
+			if (tile.isPermanentlyOwned())	permanentTiles++;
+		}
+		Map<Direction, Point> nest = world.getNeighbours(world.getEnemyNestPositions()[0]);
+		for (Map.Entry<Direction, Point> entry: nest.entrySet()) {
+			if (!world.isWall(entry.getValue()))	permanentTiles++;
+		}	
+		System.out.println(permanentTiles);
+		if (world.getFriendlyTiles().length == (tiles-permanentTiles) || turn > 90) {
+			avoidPoint.clear();
+			winningTiles.clear();
+		} else {
+			Point theNest = world.getEnemyNestPositions()[0];
+			winningTiles.add(theNest);
+			winningTiles.add(theNest.add(new Point(1,0)));
+			winningTiles.add(theNest.add(new Point(-1,0)));
+			winningTiles.add(theNest.add(new Point(0,1)));
+			winningTiles.add(theNest.add(new Point(0,-1)));
+			avoidPoint.add(theNest);
+			avoidPoint.add(theNest.add(new Point(1,0)));
+			avoidPoint.add(theNest.add(new Point(-1,0)));
+			avoidPoint.add(theNest.add(new Point(0,1)));
+			avoidPoint.add(theNest.add(new Point(0,-1)));
+		}
+    }
+    
+    public void noClusters (World world) {
+		tiles = world.getTiles().length;
+		Point mainNest = world.getFriendlyNestPositions()[0];
+		int path_one, path_two, x, y;
+		path_one = path_two = 0;
+		// Brute force computation
+		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, 1)));
+		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 2)));
+		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -2)));
+		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, -1)));
+		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, -1)));
+		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, 1)));
+		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 3)));
+		path_one += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -3)));
+		    			
+		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, -1)));
+		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 2)));
+		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, 1)));
+		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -2)));
+		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, 1)));
+		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, -1)));
+		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -3)));
+		path_two += world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 3)));
+//		// Automated Computation does not seem to work because of world.getShortestPathDistance
+//		// It does not like references as arguments
+//		mainNest = mainNest.add(new Point(1, -3));
+//		x = mainNest.getX();
+//		y = mainNest.getY();
+//		for (int i=0; i<3; i++) {
+//			for (int j=0; j<3; j++) {
+//				path_one += world.getShortestPathDistance(new Point(3, 2), new Point(3,3));
+//			}
+//			x -= 2;
+//			y++;
+//		}
+//		System.out.println(path_one);
+//		//Path two 3x3
+//		mainNest = mainNest.add(new Point(-1, -3));
+//		x = mainNest.getX();
+//		y = mainNest.getY();
+//		for (int i=0; i<3; i++) {
+//			for (int j=0; j<3; j++) {
+//				path_two += world.getShortestPathDistance(new Point(3, 2), new Point(x+2*j, y+j));
+//			}
+//			x--;
+//			y += 2;
+//		}
+		if (path_one > path_two) {
+			//Starting for 5x5 (2, -6)
+			//Starting for 7x7 (3, -9)
+			mainNest = mainNest.add(new Point(3, -9));
+			x = mainNest.getX();
+			y = mainNest.getY();
+			for (int i=0; i<7; i++) {
+				for (int j=0; j<7; j++) {
+					avoidPoint.add(new Point(x+j, y+2*j));
+				}
+				x -= 2;
+				y++;
+			}
+		} else {
+			//Starting for 5x5 (-2, -6)
+			//Starting for 7x7 (-3, -9)
+			mainNest = mainNest.add(new Point(-3, -9));
+			x = mainNest.getX();
+			y = mainNest.getY();
+			for (int i=0; i<7; i++) {
+				for (int j=0; j<7; j++) {
+					avoidPoint.add(new Point(x+2*j, y+j));
+				}
+				x--;
+				y += 2;
+			}
+		}
+    }
+    
+    public Point convertToMapPoint (Point point) {
+    		if (point.getX() < 0) {
+    			point.add(new Point(19, 0));
+    		}
+    		if (point.getY() < 0) {
+    			point.add(new Point(0, 19));
+    		}
+    		return point;
+    }
 
 }
