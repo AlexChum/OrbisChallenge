@@ -47,10 +47,10 @@ public class PlayerAI {
     			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, 2)));
     			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, -2)));
     			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-2, -1)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, -1)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, 1)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 3)));
-    			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -3)));
+    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(3, -1)));
+    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-3, 1)));
+    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 3)));
+    			path_one = world.getShortestPathDistance(mainNest, mainNest.add(new Point(-1, -3)));
     			    			
     			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(2, -1)));
     			path_two = world.getShortestPathDistance(mainNest, mainNest.add(new Point(1, 2)));
